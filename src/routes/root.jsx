@@ -61,7 +61,7 @@ export default function Root() {
         <h2>Rule Check</h2>
         <Box
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           margin="normal"
         >
@@ -87,7 +87,7 @@ export default function Root() {
 
         <Box
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           margin="normal"
         >
@@ -117,7 +117,7 @@ export default function Root() {
         <Box
           component="form"
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           noValidate
           autoComplete="off"

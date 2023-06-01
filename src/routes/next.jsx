@@ -3,11 +3,21 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
-// import IconButton from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
-import List from "@mui/material/List";
 import Input from "@mui/material/Input";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
 
 export default function Next() {
   const urlAcc = "https://bookkeeping-23.herokuapp.com/accounts";
@@ -15,6 +25,7 @@ export default function Next() {
 
   const [accounts, setAccounts] = React.useState([]);
   const [rule, setRule] = React.useState("");
+  const [rules, setRules] = React.useState([]);
 
   const [receiverAccount, setReceiverAccount] = React.useState(null);
   const [senderAccount, setSenderAccount] = React.useState(null);
@@ -33,7 +44,7 @@ export default function Next() {
     try {
       const response = await fetch(urlRules);
       const jsonData = await response.json();
-      setRule(Array.from(jsonData));
+      setRules(Array.from(jsonData));
     } catch (err) {
       console.error("Error fetching", err);
     }
@@ -72,12 +83,53 @@ export default function Next() {
       console.log(data);
       if (response.status === 200) {
         alert("Rule created successfully");
-      } else {
-        alert("Some error occured");
       }
     } catch (err) {
       console.error("Error submitting rule", err);
     }
+  };
+
+  const columns = [
+    { id: "name", label: "Rule", minWidth: 30 },
+
+    {
+      id: "receiverAccount",
+      label: "Receiver Account",
+      minWidth: 30,
+      align: "right",
+      // format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "senderAccount",
+      label: "Sender Account",
+      minWidth: 30,
+      align: "right",
+      // format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: `${EditIcon}`,
+      label: "Edit",
+      minWidth: 20,
+      align: "right",
+    },
+    {
+      id: "DeleteIcon",
+      label: "Delete",
+      minWidth: 20,
+      align: "right",
+    },
+  ];
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
 
   return (
@@ -89,7 +141,7 @@ export default function Next() {
         <h2>Create new rule</h2>
         <Box
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           margin="normal"
         >
@@ -115,7 +167,7 @@ export default function Next() {
         </Box>
         <Box
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           margin="normal"
         >
@@ -143,7 +195,7 @@ export default function Next() {
         <Box
           component="form"
           sx={{
-            "& > :not(style)": { m: 1, width: "500px" },
+            "& > :not(style)": { m: 1, width: "100%", maxWidth: 480 },
           }}
           noValidate
           autoComplete="off"
@@ -162,34 +214,59 @@ export default function Next() {
         <Button onClick={handleRuleSubmit} className="btn" size="large">
           Save rule
         </Button>
-        <Box>
-          {/* <h2>List of Rules</h2> */}
-          <List sx={{ width: "100%", maxWidth: 480 }}>
-            {/* {rules && rules.map(rule => { 
-              return (
-                <ListItem
-                  key={rule.id}
-                  disableGutters
-                  secondaryAction={
-                    <>
-                      <IconButton className="btn btn-edit">
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton className="btn btn-delete">
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  }
-                >
-                  <ListItemText
-                    primary={`From ${rule.receiverAcc} to ${rule.senderAcc}`}
-                  />
-                </ListItem>
-            );})
-              }
-             */}
-          </List>
-        </Box>
+
+        <h2>List of Rules</h2>
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer sx={{ maxHeight: 440 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rules
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.id}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format ? column.format(value) : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={Math.floor(rules.length / 10) + 1}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
       </Container>
     </>
   );

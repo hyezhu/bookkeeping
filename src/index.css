@@ -20,9 +20,9 @@ code {
   border-radius: 10px;
 }
 
-.input {
+/* .input {
   padding: 20px 80px;
-}
+} */
 
 .btn {
   display: inline-block;
@@ -33,4 +33,11 @@ code {
 
 .btn-delete {
   margin-left: 20px !important;
+}
+
+.btn-edit {
+  background-color: #6a994e !important;
+}
+.btn-delete {
+  background-color: #e63946 !important;
 }
