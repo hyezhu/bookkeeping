@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(148, 187, 233, 1) 100%
+  );
+  border-radius: 10px;
+}
+
+.input {
+  padding: 20px 60px;
+}
+
+.btn {
+  display: inline-block;
+  width: fit-content;
+  background-color: #1172e4 !important;
+  color: white !important;
+}
+
+.btn-delete {
+  margin-left: 20px !important;
+}
