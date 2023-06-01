@@ -12,10 +12,6 @@ code {
 
 .container {
   margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background: radial-gradient(
     circle,
     rgba(238, 174, 202, 1) 0%,
@@ -25,7 +21,7 @@ code {
 }
 
 .input {
-  padding: 20px 60px;
+  padding: 20px 80px;
 }
 
 .btn {

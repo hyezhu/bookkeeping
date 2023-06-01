@@ -83,8 +83,8 @@ export default function Next() {
   return (
     <>
       <Container className="container">
-        <h1>Page 2</h1>
-        <Link to="/">Back</Link>
+        <h1>Bookkeeping p.2</h1>
+        <Link to="/">⬅️ Back</Link>
 
         <h2>Create new rule</h2>
         <Box
@@ -95,7 +95,7 @@ export default function Next() {
         >
           <Autocomplete
             {...defaultProps}
-            id="pick-account"
+            id="receiver"
             includeInputInList
             value={receiverAccount}
             onChange={(event, newValue) => {
@@ -121,7 +121,7 @@ export default function Next() {
         >
           <Autocomplete
             {...defaultProps}
-            id="pick-account"
+            id="sender"
             includeInputInList
             value={senderAccount}
             onChange={(event, newValue) => {
@@ -155,7 +155,7 @@ export default function Next() {
             variant="filled"
             required
             fullWidth
-            label="create new rule"
+            placeholder="create new rule here"
             onChange={(e) => setRule(e.target.value)}
           />
         </Box>

@@ -56,8 +56,8 @@ export default function Root() {
   return (
     <>
       <Container className="container">
-        <h1>Page 1</h1>
-        <Link to="/next">Next page</Link>
+        <h1>Bookkeeping p.1</h1>
+        <Link to="/next">Next ➡️</Link>
         <h2>Rule Check</h2>
         <Box
           sx={{
@@ -67,7 +67,7 @@ export default function Root() {
         >
           <Autocomplete
             {...defaultProps}
-            id="pick-account"
+            id="receiver"
             includeInputInList
             value={receiverAccount}
             onChange={(event, newValue) => {
@@ -93,7 +93,7 @@ export default function Root() {
         >
           <Autocomplete
             {...defaultProps}
-            id="pick-account"
+            id="sender"
             includeInputInList
             value={senderAccount}
             onChange={(event, newValue) => {
