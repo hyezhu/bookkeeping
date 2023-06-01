@@ -90,6 +90,7 @@ export default function Next() {
   };
 
   const columns = [
+    { id: "id", label: "key", minWidth: 30 },
     { id: "name", label: "Rule", minWidth: 30 },
 
     {
@@ -106,18 +107,6 @@ export default function Next() {
       align: "right",
       // format: (value) => value.toLocaleString("en-US"),
     },
-    {
-      id: `${EditIcon}`,
-      label: "Edit",
-      minWidth: 20,
-      align: "right",
-    },
-    {
-      id: "DeleteIcon",
-      label: "Delete",
-      minWidth: 20,
-      align: "right",
-    },
   ];
 
   const [page, setPage] = React.useState(0);
@@ -132,6 +121,17 @@ export default function Next() {
     setPage(0);
   };
 
+  const handleClickDelete = async (event, id) => {
+    try {
+      console.log(id);
+      const response = await fetch(`${urlRules}/${id}`, { method: "DELETE" });
+      const data = await response.json();
+      setRules(Array.from(data));
+      console.log(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
   return (
     <>
       <Container className="container">
@@ -230,19 +230,18 @@ export default function Next() {
                       {column.label}
                     </TableCell>
                   ))}
+                  <TableCell>Edit</TableCell>
+                  <TableCell>Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {rules
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
+                    const id = row.id;
+
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.id}
-                      >
+                      <TableRow hover tabIndex={-1} key={id}>
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
@@ -251,6 +250,21 @@ export default function Next() {
                             </TableCell>
                           );
                         })}
+
+                        <TableCell key={`edit${row.id}`}>
+                          <IconButton>
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell key={`delete${row.id}`}>
+                          <IconButton
+                            onClick={() => {
+                              handleClickDelete(id);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     );
                   })}
