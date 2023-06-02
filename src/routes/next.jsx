@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import Input from "@mui/material/Input";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckIcon from "@mui/icons-material/Check";
 
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -18,6 +19,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+
+import Stack from "@mui/system/Stack";
+import FocusTrap from "@mui/base/FocusTrap";
 
 export default function Next() {
   const urlAcc = "https://bookkeeping-23.herokuapp.com/accounts";
@@ -29,6 +33,8 @@ export default function Next() {
 
   const [receiverAccount, setReceiverAccount] = React.useState(null);
   const [senderAccount, setSenderAccount] = React.useState(null);
+
+  const [open, setOpen] = React.useState(false);
 
   const fetchAccounts = async () => {
     try {
@@ -81,6 +87,7 @@ export default function Next() {
 
       const data = await response.json();
       console.log(data);
+      fetchRules();
       if (response.status === 200) {
         alert("Rule created successfully");
       }
@@ -90,7 +97,6 @@ export default function Next() {
   };
 
   const columns = [
-    { id: "id", label: "key", minWidth: 30 },
     { id: "name", label: "Rule", minWidth: 30 },
 
     {
@@ -112,7 +118,7 @@ export default function Next() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 
@@ -121,17 +127,35 @@ export default function Next() {
     setPage(0);
   };
 
-  const handleClickDelete = async (event, id) => {
+  const handleDelete = async (id) => {
     try {
       console.log(id);
       const response = await fetch(`${urlRules}/${id}`, { method: "DELETE" });
       const data = await response.json();
-      setRules(Array.from(data));
+      console.log(data);
+      fetchRules();
+      if (response.status === 200) {
+        alert("Rule deleted successfully");
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const handleEdit = async (id) => {
+    try {
+      const response = await fetch(`${urlRules}/${id}`, {
+        method: "PUT",
+        body: { name: rule },
+      });
+      const data = await response.json();
+      // setRules(data));
       console.log(data);
     } catch (err) {
       console.error(err.message);
     }
   };
+
   return (
     <>
       <Container className="container">
@@ -230,7 +254,7 @@ export default function Next() {
                       {column.label}
                     </TableCell>
                   ))}
-                  <TableCell>Edit</TableCell>
+                  {/* <TableCell>Edit</TableCell> */}
                   <TableCell>Delete</TableCell>
                 </TableRow>
               </TableHead>
@@ -238,10 +262,8 @@ export default function Next() {
                 {rules
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    const id = row.id;
-
                     return (
-                      <TableRow hover tabIndex={-1} key={id}>
+                      <TableRow hover tabIndex={-1} key={row.id}>
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
@@ -251,15 +273,34 @@ export default function Next() {
                           );
                         })}
 
-                        <TableCell key={`edit${row.id}`}>
-                          <IconButton>
-                            <EditIcon />
-                          </IconButton>
-                        </TableCell>
+                        {/* <TableCell key={`edit${row.id}`}>
+                         
+                              <IconButton
+                                type="button"
+                  
+                              >
+                                {open ? (
+                                  <CheckIcon
+                                    onClick={() => {
+                                      const id = row.id;
+                                      handleEdit(id);
+                                    }}
+                                  />
+                                ) : (
+                                  <EditIcon />
+                                )}
+                              </IconButton>
+                              {open && (
+                                <label>
+                                  Rule: <input type="text" />
+                                </label>
+                              )}
+                        </TableCell> */}
                         <TableCell key={`delete${row.id}`}>
                           <IconButton
                             onClick={() => {
-                              handleClickDelete(id);
+                              const id = row.id;
+                              handleDelete(id);
                             }}
                           >
                             <DeleteIcon />
