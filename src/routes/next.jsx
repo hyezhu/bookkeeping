@@ -7,9 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Input from "@mui/material/Input";
-import EditIcon from "@mui/icons-material/Edit";
+
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
 
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -19,9 +18,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-
-import Stack from "@mui/system/Stack";
-import FocusTrap from "@mui/base/FocusTrap";
 
 export default function Next() {
   const urlAcc = "https://bookkeeping-23.herokuapp.com/accounts";
@@ -33,8 +29,6 @@ export default function Next() {
 
   const [receiverAccount, setReceiverAccount] = React.useState(null);
   const [senderAccount, setSenderAccount] = React.useState(null);
-
-  const [open, setOpen] = React.useState(false);
 
   const fetchAccounts = async () => {
     try {
@@ -142,19 +136,19 @@ export default function Next() {
     }
   };
 
-  const handleEdit = async (id) => {
-    try {
-      const response = await fetch(`${urlRules}/${id}`, {
-        method: "PUT",
-        body: { name: rule },
-      });
-      const data = await response.json();
-      // setRules(data));
-      console.log(data);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+  // const handleEdit = async (id) => {
+  //   try {
+  //     const response = await fetch(`${urlRules}/${id}`, {
+  //       method: "PUT",
+  //       body: { name: rule },
+  //     });
+  //     const data = await response.json();
+  //     // setRules(data));
+  //     console.log(data);
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // };
 
   return (
     <>
