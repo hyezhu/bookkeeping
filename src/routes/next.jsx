@@ -103,10 +103,8 @@ export default function Next() {
 
   const handleDeleteRule = async (id) => {
     try {
-      console.log(id);
       const response = await fetch(`${urlRules}/${id}`, { method: "DELETE" });
-      const data = await response.json();
-      console.log(data);
+      const data = await response.text();
       fetchRules();
       if (response.status === 200) {
         alert("Rule deleted successfully");
