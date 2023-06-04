@@ -3,21 +3,13 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
+
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Input from "@mui/material/Input";
 
-import DeleteIcon from "@mui/icons-material/Delete";
-
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import PopupEdit from "./modal.jsx";
+import RuleTable from "./table.jsx";
 
 export default function Next() {
   const urlAcc = "https://bookkeeping-23.herokuapp.com/accounts";
@@ -90,38 +82,26 @@ export default function Next() {
     }
   };
 
-  const columns = [
-    { id: "name", label: "Rule", minWidth: 30 },
+  // const columns = [
+  //   { id: "name", label: "Rule", minWidth: 30 },
 
-    {
-      id: "receiverAccount",
-      label: "Receiver Account",
-      minWidth: 30,
-      align: "right",
-      // format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "senderAccount",
-      label: "Sender Account",
-      minWidth: 30,
-      align: "right",
-      // format: (value) => value.toLocaleString("en-US"),
-    },
-  ];
+  //   {
+  //     id: "receiverAccount",
+  //     label: "Receiver Account",
+  //     minWidth: 30,
+  //     align: "right",
+  //     // format: (value) => value.toLocaleString("en-US"),
+  //   },
+  //   {
+  //     id: "senderAccount",
+  //     label: "Sender Account",
+  //     minWidth: 30,
+  //     align: "right",
+  //     // format: (value) => value.toLocaleString("en-US"),
+  //   },
+  // ];
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const handleDelete = async (id) => {
+  const handleDeleteRule = async (id) => {
     try {
       console.log(id);
       const response = await fetch(`${urlRules}/${id}`, { method: "DELETE" });
@@ -136,19 +116,42 @@ export default function Next() {
     }
   };
 
-  // const handleEdit = async (id) => {
-  //   try {
-  //     const response = await fetch(`${urlRules}/${id}`, {
-  //       method: "PUT",
-  //       body: { name: rule },
-  //     });
-  //     const data = await response.json();
-  //     // setRules(data));
-  //     console.log(data);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
+  const [ruleToEdit, setRuleToEdit] = React.useState([rule.id]);
+  const [modalOpen, setModalOpen] = React.useState(false);
+
+  const handleEditRule = (id) => {
+    console.log(id);
+    setRuleToEdit(id);
+    setModalOpen(true);
+  };
+
+  const handleFormSubmit = async (newRule) => {
+    console.log(newRule);
+    console.log(ruleToEdit);
+    try {
+      ruleToEdit === null
+        ? setRules([...rules, newRule])
+        : setRules(
+            rules.map((rule) => {
+              if (rule.id !== ruleToEdit) return rule;
+
+              return newRule;
+            })
+          );
+      const response = await fetch(`${urlRules}/${ruleToEdit}`, {
+        method: "PUT",
+        body: JSON.stringify({ name: newRule }),
+      });
+      const data = await response.json();
+      console.log(data);
+      fetchRules();
+      if (response.status === 200) {
+        alert("Rule updated successfully");
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   return (
     <>
@@ -234,88 +237,22 @@ export default function Next() {
         </Button>
 
         <h2>List of Rules</h2>
-        <Paper sx={{ width: "100%", overflow: "hidden" }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                  {/* <TableCell>Edit</TableCell> */}
-                  <TableCell>Delete</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rules
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow hover tabIndex={-1} key={row.id}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format ? column.format(value) : value}
-                            </TableCell>
-                          );
-                        })}
 
-                        {/* <TableCell key={`edit${row.id}`}>
-                         
-                              <IconButton
-                                type="button"
-                  
-                              >
-                                {open ? (
-                                  <CheckIcon
-                                    onClick={() => {
-                                      const id = row.id;
-                                      handleEdit(id);
-                                    }}
-                                  />
-                                ) : (
-                                  <EditIcon />
-                                )}
-                              </IconButton>
-                              {open && (
-                                <label>
-                                  Rule: <input type="text" />
-                                </label>
-                              )}
-                        </TableCell> */}
-                        <TableCell key={`delete${row.id}`}>
-                          <IconButton
-                            onClick={() => {
-                              const id = row.id;
-                              handleDelete(id);
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 50]}
-            component="div"
-            count={Math.floor(rules.length / 10) + 1}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+        <RuleTable
+          rows={rules}
+          deleteRow={handleDeleteRule}
+          editRow={handleEditRule}
+        />
+        {modalOpen && (
+          <PopupEdit
+            closeModal={() => {
+              setModalOpen(false);
+              setRuleToEdit(null);
+            }}
+            onSubmit={handleFormSubmit}
+            defaultValue={rule.name}
           />
-        </Paper>
+        )}
       </Container>
     </>
   );
